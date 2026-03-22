@@ -1,7 +1,12 @@
 from ingestion.loader import load_documents
+from processing.chunker import MarkdownChunker
 
-if __name__ == "__main__":
-    documents = load_documents("docs")
+docs = load_documents("docs")
 
-    print("\nSample Document Structure:\n")
-    print(documents[0])
+chunker = MarkdownChunker(min_chunk_size=100)
+chunks = chunker.chunk_documents(docs)
+
+print(f"Total chunks created: {len(chunks)}")
+
+# Example output
+print(chunks[0])
