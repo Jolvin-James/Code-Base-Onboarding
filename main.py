@@ -1,6 +1,5 @@
 import os
 import time
-
 from ingestion.loader import load_documents
 from processing.chunker import MarkdownChunker
 from processing.embedder import EmbeddingGenerator
@@ -9,38 +8,78 @@ from retrieval.query_processor import QueryProcessor
 from retrieval.context_builder import ContextBuilder
 from utils.save_embeddings import save_embeddings, load_embeddings
 
+def build_prompt(context, query):
+    system_prompt = """
+You are a senior software engineer helping developers understand a codebase.
+
+STRICT RULES:
+- Use ONLY the provided context
+- Do NOT use prior knowledge
+- Do NOT guess or assume
+- If the answer is not in the context, say:
+  "I could not find this in the documentation."
+
+RESPONSE FORMAT:
+
+Answer:
+<clear and concise explanation>
+
+Sources:
+- <source file + section>
+"""
+
+    user_prompt = f"""
+Context:
+{context}
+
+Question:
+{query}
+"""
+    return system_prompt, user_prompt
+
+def call_llm(system_prompt, user_prompt):
+    """
+    Replace this with actual LLM API call (OpenAI / local model).
+    """
+
+    # Example placeholder behavior
+    print("\n[DEBUG] Sending to LLM...\n")
+    print("SYSTEM PROMPT:\n", system_prompt)
+    print("\nUSER PROMPT:\n", user_prompt)
+
+    # Dummy response (replace later)
+    return "LLM response will appear here."
+
 
 def main():
     start_time = time.time()
 
-    # Ensure ROOT_DIR resolves correctly regardless of execution location
     ROOT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "docs")
 
     print(f"\nLoading documents from {ROOT_DIR}...")
+
     try:
         documents = load_documents(ROOT_DIR)
     except FileNotFoundError:
-        print(f"Error: Directory '{ROOT_DIR}' not found. Please create it and add markdown files.")
+        print(f"Error: Directory '{ROOT_DIR}' not found.")
         return
 
     if not documents:
-        print("No documents found to process. Exiting.")
+        print("No documents found. Exiting.")
         return
 
     print(f"Loaded {len(documents)} documents")
 
-    # CHUNKING
     print("\nChunking documents...")
     chunker = MarkdownChunker(min_chunk_size=100)
     chunks = chunker.chunk_documents(documents)
 
     if not chunks:
-        print("No chunks were generated. Exiting.")
+        print("No chunks generated. Exiting.")
         return
 
     print(f"Generated {len(chunks)} chunks")
 
-    # EMBEDDINGS (WITH CACHING)
     embedder = EmbeddingGenerator(normalize=True)
 
     try:
@@ -56,7 +95,6 @@ def main():
         save_embeddings(embeddings, chunks)
         print("Embeddings generated and saved")
 
-    # FAISS INDEX
     print("\nCreating FAISS index...")
     dimension = embeddings.shape[1]
 
@@ -65,23 +103,18 @@ def main():
 
     print(f"FAISS index size: {faiss_index.get_size()}")
 
-    # QUERY + CONTEXT PIPELINE
     query_processor = QueryProcessor(embedder, faiss_index)
     context_builder = ContextBuilder(max_context_chars=2500, max_chunks=5)
 
-    test_queries = [
-        "How authentication works",
-        "jwt validation flow",
-        "non existing feature xyz"
-    ]
-
-    for query in test_queries:
+    while True:
         print("\n" + "=" * 80)
-        print(f"QUERY: {query}")
-        print("=" * 80)
+        query = input("Enter your question (or 'exit'): ").strip()
 
-        if not query.strip():
-            print("Empty query. Skipping...")
+        if query.lower() == "exit":
+            break
+
+        if not query:
+            print("Empty query. Try again.")
             continue
 
         results = query_processor.process_query(query, top_k=5)
@@ -92,30 +125,27 @@ def main():
 
         # Low confidence warning
         if results[0]["similarity"] < 0.2:
-            print("⚠️ Low confidence retrieval. Results may be inaccurate.\n")
+            print("⚠️ Low confidence retrieval. Answer may be unreliable.\n")
 
-        # Build context
         context = context_builder.build_context(results)
 
-        # Display context
         print("\n" + "-" * 80)
         print("CONTEXT SENT TO LLM")
         print("-" * 80)
         print(context)
         print("-" * 80)
 
-        # Display ranked results (top 5)
-        print("\nTop Retrieved Chunks:")
-        for r in results[:5]:
-            print(f"\nRank: {r['rank']}")
-            print(f"Similarity: {r['similarity']:.4f}")
-            print(f"Header: {r['header']}")
-            print(f"Source: {r['source']}")
-            print("-" * 40)
+        system_prompt, user_prompt = build_prompt(context, query)
+
+        response = call_llm(system_prompt, user_prompt)
+
+        print("\n" + "=" * 80)
+        print("FINAL ANSWER")
+        print("=" * 80)
+        print(response)
 
     end_time = time.time()
     print(f"\nExecution Time: {end_time - start_time:.2f} seconds")
-
 
 if __name__ == "__main__":
     main()
