@@ -1,5 +1,6 @@
 import os
 import time
+import requests
 from ingestion.loader import load_documents
 from processing.chunker import MarkdownChunker
 from processing.embedder import EmbeddingGenerator
@@ -10,22 +11,13 @@ from utils.save_embeddings import save_embeddings, load_embeddings
 
 def build_prompt(context, query):
     system_prompt = """
-You are a senior software engineer helping developers understand a codebase.
+You are a strict codebase assistant.
 
-STRICT RULES:
-- Use ONLY the provided context
-- Do NOT use prior knowledge
-- Do NOT guess or assume
-- If the answer is not in the context, say:
-  "I could not find this in the documentation."
-
-RESPONSE FORMAT:
-
-Answer:
-<clear and concise explanation>
-
-Sources:
-- <source file + section>
+RULES:
+- Answer ONLY using the provided context
+- Do NOT guess
+- If not found, say: "I could not find this in the documentation."
+- Keep answers short and precise
 """
 
     user_prompt = f"""
@@ -34,21 +26,39 @@ Context:
 
 Question:
 {query}
+
+Answer:
 """
+
     return system_prompt, user_prompt
 
 def call_llm(system_prompt, user_prompt):
-    """
-    Replace this with actual LLM API call (OpenAI / local model).
+    url = "http://localhost:11434/api/generate"
+
+    full_prompt = f"""
+        {system_prompt}
+
+        {user_prompt}
     """
 
-    # Example placeholder behavior
-    print("\n[DEBUG] Sending to LLM...\n")
-    print("SYSTEM PROMPT:\n", system_prompt)
-    print("\nUSER PROMPT:\n", user_prompt)
+    payload = {
+        "model": "llama3.2",   # or mistral, phi3, etc.
+        "prompt": full_prompt,
+        "stream": False
+    }
 
-    # Dummy response (replace later)
-    return "LLM response will appear here."
+    try:
+        response = requests.post(url, json=payload)
+
+        if response.status_code != 200:
+            return f"Ollama Error: {response.text}"
+
+        data = response.json()
+
+        return data.get("response", "No response from model.")
+
+    except Exception as e:
+        return f"Local LLM Error: {str(e)}"
 
 
 def main():
