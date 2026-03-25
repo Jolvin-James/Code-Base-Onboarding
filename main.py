@@ -1,6 +1,8 @@
 import os
 import time
 import requests
+from datetime import datetime
+
 from ingestion.loader import load_documents
 from processing.chunker import MarkdownChunker
 from processing.embedder import EmbeddingGenerator
@@ -8,6 +10,13 @@ from retrieval.faiss_index import FAISSIndex
 from retrieval.query_processor import QueryProcessor
 from retrieval.context_builder import ContextBuilder
 from utils.save_embeddings import save_embeddings, load_embeddings
+
+
+STALE_THRESHOLD_DAYS = 180
+TOP_K = 5
+MAX_CONTEXT_CHARS = 2500
+MAX_CHUNKS = 5
+
 
 def build_prompt(context, query):
     system_prompt = """
@@ -32,17 +41,18 @@ Answer:
 
     return system_prompt, user_prompt
 
+
 def call_llm(system_prompt, user_prompt):
     url = "http://localhost:11434/api/generate"
 
     full_prompt = f"""
-        {system_prompt}
+{system_prompt}
 
-        {user_prompt}
-    """
+{user_prompt}
+"""
 
     payload = {
-        "model": "llama3.2",   # or mistral, phi3, etc.
+        "model": "llama3.2",
         "prompt": full_prompt,
         "stream": False
     }
@@ -54,11 +64,47 @@ def call_llm(system_prompt, user_prompt):
             return f"Ollama Error: {response.text}"
 
         data = response.json()
-
         return data.get("response", "No response from model.")
 
     except Exception as e:
         return f"Local LLM Error: {str(e)}"
+
+
+def check_stale_documents(results):
+    """
+    Detect outdated documents based on last_updated timestamp.
+    Returns list of warnings (unique per source).
+    """
+
+    warnings = []
+    seen_sources = set()
+
+    current_time = time.time()
+
+    for r in results:
+        source = r.get("source")
+        last_updated = r.get("last_updated")
+
+        if not source or not last_updated:
+            continue
+
+        if source in seen_sources:
+            continue
+
+        age_days = (current_time - last_updated) / (60 * 60 * 24)
+
+        if age_days > STALE_THRESHOLD_DAYS:
+            readable_time = datetime.fromtimestamp(last_updated).strftime("%Y-%m-%d")
+
+            warnings.append({
+                "source": source,
+                "age_days": int(age_days),
+                "last_updated": readable_time
+            })
+
+            seen_sources.add(source)
+
+    return warnings
 
 
 def main():
@@ -114,7 +160,10 @@ def main():
     print(f"FAISS index size: {faiss_index.get_size()}")
 
     query_processor = QueryProcessor(embedder, faiss_index)
-    context_builder = ContextBuilder(max_context_chars=2500, max_chunks=5)
+    context_builder = ContextBuilder(
+        max_context_chars=MAX_CONTEXT_CHARS,
+        max_chunks=MAX_CHUNKS
+    )
 
     while True:
         print("\n" + "=" * 80)
@@ -127,15 +176,25 @@ def main():
             print("Empty query. Try again.")
             continue
 
-        results = query_processor.process_query(query, top_k=5)
+        results = query_processor.process_query(query, top_k=TOP_K)
 
         if not results:
             print("No relevant results found.")
             continue
 
-        # Low confidence warning
         if results[0]["similarity"] < 0.2:
-            print("⚠️ Low confidence retrieval. Answer may be unreliable.\n")
+            print("Low confidence retrieval. Answer may be unreliable.\n")
+
+        stale_warnings = check_stale_documents(results)
+
+        if stale_warnings:
+            print("\nPotentially outdated documentation detected:")
+            for w in stale_warnings:
+                print(
+                    f"- {w['source']} (Last updated: {w['last_updated']}, "
+                    f"{w['age_days']} days old)"
+                )
+            print()
 
         context = context_builder.build_context(results)
 
@@ -146,7 +205,6 @@ def main():
         print("-" * 80)
 
         system_prompt, user_prompt = build_prompt(context, query)
-
         response = call_llm(system_prompt, user_prompt)
 
         print("\n" + "=" * 80)
@@ -156,6 +214,7 @@ def main():
 
     end_time = time.time()
     print(f"\nExecution Time: {end_time - start_time:.2f} seconds")
+
 
 if __name__ == "__main__":
     main()
