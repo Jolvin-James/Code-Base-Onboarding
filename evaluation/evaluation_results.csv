@@ -1,0 +1,36 @@
+query,expected_source,retrieval,correctness,faithfulness,safety,final_score
+What is Django REST framework?,docs/README.md,0,0,1,1,0.5
+How do you install Django REST framework?,docs/README.md,0,0,1,1,0.5
+What are serializers in Django REST framework?,docs/README.md,0,0,1,1,0.5
+What is a ViewSet?,docs/README.md,0,0,1,1,0.5
+What does the router do in Django REST framework?,docs/README.md,0,0,0,1,0.25
+What is the purpose of REST_FRAMEWORK settings?,docs/README.md,0,0,1,1,0.5
+What Python and Django versions are required?,docs/README.md,0,0,1,1,0.5
+How do you start a Django project in the example?,docs/README.md,0,0,1,1,0.5
+How do you create a superuser?,docs/README.md,0,0,1,1,0.5
+What is the browsable API feature?,docs/README.md,0,0,1,1,0.5
+How do you create a Django project and app in the tutorial?,docs/tutorial/quickstart.md,0,0,1,1,0.5
+How do you activate a virtual environment?,docs/tutorial/quickstart.md,0,0,1,1,0.5
+How do you run database migrations?,docs/tutorial/quickstart.md,0,0,0,1,0.25
+What does HyperlinkedModelSerializer do?,docs/tutorial/quickstart.md,0,0,1,1,0.5
+What is the purpose of permission_classes in views?,docs/tutorial/quickstart.md,0,0,1,1,0.5
+How are API URLs generated in the tutorial?,docs/tutorial/quickstart.md,0,0,1,1,0.5
+How do you enable pagination?,docs/tutorial/quickstart.md,0,0,1,1,0.5
+How do you test the API using curl?,docs/tutorial/quickstart.md,0,0,1,1,0.5
+What does ModelViewSet provide?,docs/tutorial/quickstart.md,0,0,1,1,0.5
+How do you start the server?,docs/tutorial/quickstart.md,0,0,1,1,0.5
+What is authentication in REST framework?,docs/api/authentication.md,0,0,1,1,0.5
+When does authentication run in the request lifecycle?,docs/api/authentication.md,0,0,1,1,0.5
+What happens if no authentication class succeeds?,docs/api/authentication.md,0,0,1,1,0.5
+What is TokenAuthentication?,docs/api/authentication.md,0,0,1,1,0.5
+How is the token sent in requests?,docs/api/authentication.md,0,0,1,1,0.5
+What is BasicAuthentication?,docs/api/authentication.md,0,0,1,1,0.5
+What is the difference between HTTP 401 and 403?,docs/api/authentication.md,0,0,1,1,0.5
+What does request.auth contain?,docs/api/authentication.md,0,0,1,1,0.5
+How do you generate tokens for users?,docs/api/authentication.md,0,0,1,1,0.5
+What is SessionAuthentication?,docs/api/authentication.md,0,0,1,1,0.5
+How do I deploy Django REST framework on Kubernetes?,none,1,0,1,1,0.75
+Does the documentation mention JWT authentication?,docs/api/authentication.md,0,0,1,1,0.5
+Can Django REST framework be used for mobile apps?,docs/api/authentication.md,0,0,1,1,0.5
+Does authentication alone grant access?,docs/api/authentication.md,0,0,1,1,0.5
+What happens if a request is authenticated but not permitted?,docs/api/authentication.md,0,0,1,1,0.5

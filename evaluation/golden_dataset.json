@@ -1,0 +1,247 @@
+[
+    {
+        "query": "What is Django REST framework?",
+        "expected_answer": "A toolkit for building Web APIs with features like serialization, authentication, and browsable APIs.",
+        "source": "docs/README.md",
+        "type": "conceptual",
+        "difficulty": "easy"
+    },
+    {
+        "query": "How do you install Django REST framework?",
+        "expected_answer": "Install using pip install djangorestframework and add it to INSTALLED_APPS.",
+        "source": "docs/README.md",
+        "type": "procedural",
+        "difficulty": "easy"
+    },
+    {
+        "query": "What are serializers in Django REST framework?",
+        "expected_answer": "They define how data is converted into API representations.",
+        "source": "docs/README.md",
+        "type": "conceptual",
+        "difficulty": "easy"
+    },
+    {
+        "query": "What is a ViewSet?",
+        "expected_answer": "A class that defines view behavior and handles operations like CRUD for models.",
+        "source": "docs/README.md",
+        "type": "conceptual",
+        "difficulty": "medium"
+    },
+    {
+        "query": "What does the router do in Django REST framework?",
+        "expected_answer": "It automatically determines URL configuration for viewsets.",
+        "source": "docs/README.md",
+        "type": "conceptual",
+        "difficulty": "medium"
+    },
+    {
+        "query": "What is the purpose of REST_FRAMEWORK settings?",
+        "expected_answer": "To configure default permissions and behavior of the API.",
+        "source": "docs/README.md",
+        "type": "technical",
+        "difficulty": "medium"
+    },
+    {
+        "query": "What Python and Django versions are required?",
+        "expected_answer": "Python 3.10+ and Django 4.2 or higher.",
+        "source": "docs/README.md",
+        "type": "factual",
+        "difficulty": "easy"
+    },
+    {
+        "query": "How do you start a Django project in the example?",
+        "expected_answer": "Use django-admin startproject example .",
+        "source": "docs/README.md",
+        "type": "procedural",
+        "difficulty": "easy"
+    },
+    {
+        "query": "How do you create a superuser?",
+        "expected_answer": "Use ./manage.py createsuperuser.",
+        "source": "docs/README.md",
+        "type": "procedural",
+        "difficulty": "easy"
+    },
+    {
+        "query": "What is the browsable API feature?",
+        "expected_answer": "It allows developers to interact with the API through a web interface.",
+        "source": "docs/README.md",
+        "type": "conceptual",
+        "difficulty": "easy"
+    },
+    {
+        "query": "How do you create a Django project and app in the tutorial?",
+        "expected_answer": "Use django-admin startproject tutorial . and django-admin startapp quickstart.",
+        "source": "docs/tutorial/quickstart.md",
+        "type": "procedural",
+        "difficulty": "easy"
+    },
+    {
+        "query": "How do you activate a virtual environment?",
+        "expected_answer": "Use source env/bin/activate or env\\Scripts\\activate on Windows.",
+        "source": "docs/tutorial/quickstart.md",
+        "type": "procedural",
+        "difficulty": "easy"
+    },
+    {
+        "query": "How do you run database migrations?",
+        "expected_answer": "Use python manage.py migrate.",
+        "source": "docs/tutorial/quickstart.md",
+        "type": "procedural",
+        "difficulty": "easy"
+    },
+    {
+        "query": "What does HyperlinkedModelSerializer do?",
+        "expected_answer": "It represents relationships using hyperlinks instead of primary keys.",
+        "source": "docs/tutorial/quickstart.md",
+        "type": "conceptual",
+        "difficulty": "medium"
+    },
+    {
+        "query": "What is the purpose of permission_classes in views?",
+        "expected_answer": "It defines who can access or modify the API endpoints.",
+        "source": "docs/tutorial/quickstart.md",
+        "type": "technical",
+        "difficulty": "medium"
+    },
+    {
+        "query": "How are API URLs generated in the tutorial?",
+        "expected_answer": "By registering viewsets with a router which automatically creates URL patterns.",
+        "source": "docs/tutorial/quickstart.md",
+        "type": "conceptual",
+        "difficulty": "medium"
+    },
+    {
+        "query": "How do you enable pagination?",
+        "expected_answer": "Set DEFAULT_PAGINATION_CLASS and PAGE_SIZE in REST_FRAMEWORK settings.",
+        "source": "docs/tutorial/quickstart.md",
+        "type": "procedural",
+        "difficulty": "medium"
+    },
+    {
+        "query": "How do you test the API using curl?",
+        "expected_answer": "Use curl with authentication and Accept headers to call endpoints.",
+        "source": "docs/tutorial/quickstart.md",
+        "type": "procedural",
+        "difficulty": "medium"
+    },
+    {
+        "query": "What does ModelViewSet provide?",
+        "expected_answer": "It provides default CRUD operations for a model.",
+        "source": "docs/tutorial/quickstart.md",
+        "type": "conceptual",
+        "difficulty": "medium"
+    },
+    {
+        "query": "How do you start the server?",
+        "expected_answer": "Use python manage.py runserver.",
+        "source": "docs/tutorial/quickstart.md",
+        "type": "procedural",
+        "difficulty": "easy"
+    },
+    {
+        "query": "What is authentication in REST framework?",
+        "expected_answer": "It identifies the credentials associated with a request such as user or token.",
+        "source": "docs/api/authentication.md",
+        "type": "conceptual",
+        "difficulty": "easy"
+    },
+    {
+        "query": "When does authentication run in the request lifecycle?",
+        "expected_answer": "At the very start of the view before permissions and throttling.",
+        "source": "docs/api/authentication.md",
+        "type": "technical",
+        "difficulty": "medium"
+    },
+    {
+        "query": "What happens if no authentication class succeeds?",
+        "expected_answer": "request.user is set to AnonymousUser and request.auth is None.",
+        "source": "docs/api/authentication.md",
+        "type": "technical",
+        "difficulty": "medium"
+    },
+    {
+        "query": "What is TokenAuthentication?",
+        "expected_answer": "An authentication scheme that uses a token sent in the Authorization header.",
+        "source": "docs/api/authentication.md",
+        "type": "conceptual",
+        "difficulty": "medium"
+    },
+    {
+        "query": "How is the token sent in requests?",
+        "expected_answer": "In the Authorization header as 'Token <key>'.",
+        "source": "docs/api/authentication.md",
+        "type": "technical",
+        "difficulty": "medium"
+    },
+    {
+        "query": "What is BasicAuthentication?",
+        "expected_answer": "An authentication scheme using username and password via HTTP Basic Auth.",
+        "source": "docs/api/authentication.md",
+        "type": "conceptual",
+        "difficulty": "medium"
+    },
+    {
+        "query": "What is the difference between HTTP 401 and 403?",
+        "expected_answer": "401 requires authentication with a header, 403 means permission denied.",
+        "source": "docs/api/authentication.md",
+        "type": "technical",
+        "difficulty": "hard"
+    },
+    {
+        "query": "What does request.auth contain?",
+        "expected_answer": "Additional authentication information such as token.",
+        "source": "docs/api/authentication.md",
+        "type": "technical",
+        "difficulty": "medium"
+    },
+    {
+        "query": "How do you generate tokens for users?",
+        "expected_answer": "Using rest_framework.authtoken models or signals.",
+        "source": "docs/api/authentication.md",
+        "type": "procedural",
+        "difficulty": "medium"
+    },
+    {
+        "query": "What is SessionAuthentication?",
+        "expected_answer": "An authentication scheme using Django session backend.",
+        "source": "docs/api/authentication.md",
+        "type": "conceptual",
+        "difficulty": "medium"
+    },
+    {
+        "query": "How do I deploy Django REST framework on Kubernetes?",
+        "expected_answer": "I could not find this in the documentation.",
+        "source": "none",
+        "type": "out_of_scope",
+        "difficulty": "hard"
+    },
+    {
+        "query": "Does the documentation mention JWT authentication?",
+        "expected_answer": "Yes, JWT is mentioned as a third-party authentication option.",
+        "source": "docs/api/authentication.md",
+        "type": "edge_case",
+        "difficulty": "hard"
+    },
+    {
+        "query": "Can Django REST framework be used for mobile apps?",
+        "expected_answer": "Yes, it supports client-server setups including mobile applications.",
+        "source": "docs/api/authentication.md",
+        "type": "edge_case",
+        "difficulty": "medium"
+    },
+    {
+        "query": "Does authentication alone grant access?",
+        "expected_answer": "No, permissions must also allow the request.",
+        "source": "docs/api/authentication.md",
+        "type": "technical",
+        "difficulty": "medium"
+    },
+    {
+        "query": "What happens if a request is authenticated but not permitted?",
+        "expected_answer": "A 403 Permission Denied response is returned.",
+        "source": "docs/api/authentication.md",
+        "type": "technical",
+        "difficulty": "medium"
+    }
+]
